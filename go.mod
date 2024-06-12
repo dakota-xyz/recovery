@@ -1,6 +1,6 @@
 module github.com/dakota-xyz/recovery
 
-go 1.21.3
+go 1.21
 
 require (
 	github.com/blocto/solana-go-sdk v1.26.0
