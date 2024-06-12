@@ -21,7 +21,42 @@ The format of the key mappings JSON file should be similar to
     }
   ]
 }
+
 ```
+
+# Build
+
+## Install Go 1.21 or higher:
+
+Currently, recovery uses Go 1.21 to compile the code.
+
+Install [Go 1.21](https://go.dev/doc/install) by following instructions there, e.g.:
+
+```sh
+wget https://go.dev/dl/go1.21.3.linux-amd64.tar.gz
+sudo tar xzvf go1.21.3.linux-amd64.tar.gz -C /usr/local/
+export PATH=$PATH:/usr/local/go/bin
+```
+
+Verify the installation by typing `go version` in your terminal.
+
+```sh
+$ go version
+go version go1.21.3 darwin/amd64
+```
+
+## Build Recovery
+
+In order to build `recovery` you need the source code. Either [download the source of a release](https://github.com/dakota-xyz/recovery/releases) or [clone the git repository](https://github.com/dakota-xyz/recovery).
+
+Build `recovery` from the source code:
+
+``` 
+cd recovery
+make build
+```
+
+After building, you should see a new executable file `recovery/build/recovery`.
 
 # Example usage
 
