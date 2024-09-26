@@ -18,11 +18,17 @@ import (
 )
 
 type KeyDerivation struct {
-	AddressSubId string `json:"address_sub_id"`
-	NetworkId    string `json:"network_id"`
+	// Key derivation parameters
+	AddressSubID string `json:"address_sub_id"`
+	NetworkID    string `json:"network_id"`
 	Curve        string `json:"curve"`
-}
 
+	// Useful metadata for the customer
+	Wallet             string   `json:"wallet"`
+	Address            string   `json:"address"`
+	AccountName        string   `json:"account_name"`
+	CompatibleNetworks []string `json:"compatible_networks"`
+}
 type KeyMap struct {
 	OrganizationId string          `json:"organization_id"`
 	Keys           []KeyDerivation `json:"keys"`
@@ -78,13 +84,13 @@ func Recover(targetWriter io.Writer, shard1, shard2, keyMapReader io.Reader) err
 		return fmt.Errorf("failed to unmarshal keymap: %w", err)
 	}
 	w := csv.NewWriter(targetWriter)
-	w.Write([]string{"Network", "Address", "PrivateKey"})
+	w.Write([]string{"Account", "Address", "PrivateKey", "Wallet", "Compatible Networks..."})
 	for _, kdp := range keymap.Keys {
 		generator, exists := registry.Generators[kdp.Curve]
 		if !exists {
 			return fmt.Errorf("unsupported curve %s", kdp.Curve)
 		}
-		privateKeySeed, err := RecoverSeed(dek, keymap.OrganizationId, kdp.AddressSubId, kdp.NetworkId)
+		privateKeySeed, err := RecoverSeed(dek, keymap.OrganizationId, kdp.AddressSubID, kdp.NetworkID)
 		if err != nil {
 			return fmt.Errorf("%w", err)
 		}
@@ -93,7 +99,11 @@ func Recover(targetWriter io.Writer, shard1, shard2, keyMapReader io.Reader) err
 			return fmt.Errorf("failed to derive key: %w", err)
 		}
 
-		w.Write([]string{kdp.NetworkId, address, privateKey})
+		if kdp.Wallet == "ONCHAIN" {
+			address = kdp.Address
+		}
+
+		w.Write([]string{kdp.AccountName, address, privateKey, kdp.Wallet, strings.Join(kdp.CompatibleNetworks, ",")})
 	}
 	w.Flush()
 	if err := w.Error(); err != nil {
