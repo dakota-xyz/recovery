@@ -1,5 +1,10 @@
 # Recovery tool
 
+> [!WARNING]
+> **Deprecated: scheduled for deletion**
+>
+> This repository is a dependency of the Dakota v1 monorepo only. It will be archived and deleted once Dakota v1 is fully sunsetted. Do not start new work here.
+
 This recovery tool can be used by Dakota customers to recover their keys.
 It requires a **decrypted** backup shard, the client shard, and a JSON file with the key mappings.
 
